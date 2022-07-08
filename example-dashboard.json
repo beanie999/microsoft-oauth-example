@@ -1,0 +1,211 @@
+{
+  "name": "Azure Resource Statuses",
+  "description": null,
+  "permissions": "PUBLIC_READ_WRITE",
+  "pages": [
+    {
+      "name": "Azure Statuses",
+      "description": null,
+      "widgets": [
+        {
+          "title": "West US - current statuses",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT count(*) FROM (SELECT latest(title) as title FROM AzureStatusSubscription WHERE location = 'westus' FACET id LIMIT MAX) FACET title"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Latest statuses across all resources",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.pie"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": true
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT count(*) FROM (SELECT latest(title) as title FROM AzureStatusSubscription FACET id LIMIT MAX) FACET title"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Non available providers",
+          "layout": {
+            "column": 9,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT count(*) FROM (SELECT latest(providers) as providers, latest(title) as title, latest(reasonType) as reasonType FROM AzureStatusSubscription FACET id LIMIT MAX WHERE title != 'Available') WHERE reasonType = 'Unplanned' FACET providers, title, reasonType"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Statuses over time",
+          "layout": {
+            "column": 1,
+            "row": 4,
+            "width": 8,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.stacked-bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT percentage(count(*), WHERE availabilityState = 'Available') as 'Available', percentage(count(*), WHERE availabilityState = 'Degraded') as 'Degraded', percentage(count(*), WHERE availabilityState = 'Unavailable') as 'Unavailable', percentage(count(*), WHERE availabilityState = 'Unknown') as 'Unknown' FROM AzureStatusSubscription TIMESERIES "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Non available resource groups",
+          "layout": {
+            "column": 9,
+            "row": 4,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.bar"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT count(*) FROM (SELECT latest(resourceGroups) as resourceGroups, latest(title) as title, latest(reasonType) as reasonType FROM AzureStatusSubscription FACET id LIMIT MAX WHERE title != 'Available') WHERE reasonType = 'Unplanned' FACET resourceGroups, title, reasonType"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Currelty unavailable resources",
+          "layout": {
+            "column": 1,
+            "row": 7,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "SELECT Name, Provider, Location, ResourceGroup, Status, Summary, RecommendedAction1, RecommendedAction2 FROM (FROM AzureStatusSubscription SELECT latest(resourceGroups) as 'ResourceGroup', latest(name) as 'Name', latest(summary) as 'Summary', latest(title) as 'Status', latest(providers) as 'Provider', latest(location) as 'Location', latest(reasonType) as reasonType, latest(recommendedAction1) as 'RecommendedAction1', latest(recommendedAction2) as 'RecommendedAction2' FACET id LIMIT MAX) WHERE reasonType = 'Unplanned' "
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        },
+        {
+          "title": "Status from logs",
+          "layout": {
+            "column": 1,
+            "row": 10,
+            "width": 12,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.table"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 0000000,
+                "query": "FROM Log SELECT metadata.source as 'Source', metadata.resourceGroup as 'resourceGroup', properties.eventProperties.cause as 'Cause', properties.eventProperties.title as 'Status', properties.eventProperties.details as 'Details' WHERE plugin.type = 'azure' AND properties.eventCategory = 'ResourceHealth' since 3 days ago"
+              }
+            ],
+            "platformOptions": {
+              "ignoreTimeRange": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
