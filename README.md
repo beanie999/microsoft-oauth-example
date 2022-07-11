@@ -9,6 +9,15 @@ This project uses a New Relic scripted API synthetic transaction to pull the dat
 3. Save the data from 2. in a New Relic custom event.
 
 ## Azure setup
+Perform the following actions in Azure to setup your application:
+- Register an application in Azure (App registrations), copy the Application (client) ID for the `AZURE_CLIENT_ID` and Directory (tenant) ID for the `AZURE_DIRECTORY_ID` New Relic secure credentials.
+- Create a client secret (under Certificates & secrets) and save the value for the `AZURE_CLIENT_SECRET` New Relic secure credential.
+- Save the subscription ID (under subscriptions) for the `AZURE_SUBSCRIPTION_ID` New Relic secure credential.
+- Assign the application the correct permissions. In this case, select the subscription, select Access control (IAM) and assign the Contributor role to the application.
+
+Optionally collect resource status changes via the New Relic Event Hub integration:
+- Follow the instructions in here: https://docs.newrelic.com/docs/logs/forward-logs/azure-log-forwarding/#azure-eventhub.
+- Ensure to select the forwarding of resource health Azure activity logs.
 
 ## New Relic setup
 The script uses the following secure credentials which need to be created:
@@ -16,7 +25,7 @@ The script uses the following secure credentials which need to be created:
 - `NR_INSERT_LICENSE_KEY` - the New Relic insert (ingest) license key.
 - `AZURE_DIRECTORY_ID` - the Azure Directory (tenant) id for the application.
 - `AZURE_SUBSCRIPTION_ID` - the Azure subscription id.
-- `AZURE_CLIENT_ID` - the Azure client id.
+- `AZURE_CLIENT_ID` - the Azure Application (client) id.
 - `AZURE_CLIENT_SECRET` - the Azure client secret.
 
 Once these are created perform the following actions:
