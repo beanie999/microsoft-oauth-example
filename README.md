@@ -25,5 +25,10 @@ Once these are created perform the following actions:
 - Ensure the New Relic event API endpoint is set correctly for the US or EU data centre.
 - Test the monitor, search for data within the AzureStatusSubscription custom event and set the monitor running.
 
+Optionally create the example dashboard:
+- Copy the json from the example-dashboard.json file.
+- Replace the account id with the correct account id.
+- Import the dashboard.
+
 ## Availability
 You can safely run the synthetic script from multiple locations.
