@@ -30,5 +30,7 @@ Optionally create the example dashboard:
 - Replace the account id with the correct account id.
 - Import the dashboard.
 
+![Dashboard example](dashboard.png)
+
 ## Availability
 You can safely run the synthetic script from multiple locations.
