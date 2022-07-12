@@ -42,7 +42,7 @@ function postNRData(jsonBody) {
   
   $http.post(nROptions,
     function (error, response, body) {
-      assert.equal(response.statusCode, 200, 'Expected a 200 OK response from New Relic');
+      assert.equal(response.statusCode, 200, 'Expected a 200 OK response from New Relic, got ' + response.statusCode);
       console.log('Event data sent to New Relic.');
     }
   );
@@ -62,7 +62,7 @@ function getHealth(token, url) {
         // JSON object to send to New Relic, empty for now!
         var jsonNR = [{}];
         // Did we get the right response code back from Azure?
-        assert.equal(response.statusCode, 200, 'Expected a 200 OK response');
+        assert.equal(response.statusCode, 200, 'Expected a 200 OK response from Azure, got ' + response.statusCode);
         // Parse the response into JSON
         var jsonBody = JSON.parse(body);
         // Walk through each of the entity details returned
@@ -116,10 +116,11 @@ function getHealth(token, url) {
         // Post the data to New Relic.
         postNRData(jsonNR);
         // If there is another page of data, then get it.
-        // Note - this has not been tested!!
         if (jsonBody.hasOwnProperty('nextLink')) {
           // Call this function recursively.
-          getHealth(token, jsonBody.nextLink);
+          // The link returned includes the character '$' as an encoded %24 which seems to cause problems (return code 400).
+          // Therefore remove the encoded character and replace with a '$'!
+          getHealth(token, String(jsonBody.nextLink).replace(/%24/g, "$"));
         }
       }
   );
@@ -144,7 +145,7 @@ var OAuthOptions = {
 // Get the OAuth token
 $http.post(OAuthOptions,
   function (err, response, body) {
-    assert.equal(response.statusCode, 200, 'Expected a 200 OK response');
+    assert.equal(response.statusCode, 200, 'Expected a 200 OK response, got ' + response.statusCode);
     // Parse the JSON and get the token.
     var jsRtn = JSON.parse(body);
     assert.equal(jsRtn.hasOwnProperty('access_token'), true, 'Access token not found.');
