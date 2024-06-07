@@ -64,7 +64,8 @@ function getHealth(token, url) {
         // Did we get the right response code back from Azure?
         assert.equal(response.statusCode, 200, 'Expected a 200 OK response from Azure, got ' + response.statusCode);
         // Parse the response into JSON
-        var jsonBody = JSON.parse(body);
+        // var jsonBody = JSON.parse(body);
+        var jsonBody = body;
         // Walk through each of the entity details returned
         for (var i = 0; i < jsonBody.value.length; i++) {
           // Build a JSON object for this entity and start filling it in
@@ -147,7 +148,8 @@ $http.post(OAuthOptions,
   function (err, response, body) {
     assert.equal(response.statusCode, 200, 'Expected a 200 OK response, got ' + response.statusCode);
     // Parse the JSON and get the token.
-    var jsRtn = JSON.parse(body);
+    // var jsRtn = JSON.parse(body);
+    var jsRtn = body;
     assert.equal(jsRtn.hasOwnProperty('access_token'), true, 'Access token not found.');
     console.log('OAuth token found.');
     // Now get the health data.
